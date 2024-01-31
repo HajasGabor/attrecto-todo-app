@@ -74,7 +74,7 @@ const TodoApp = () => {
 
   return (
     <div className="container">
-      <h1>Todo App</h1>
+      <h1>User Name</h1>
       <input 
         type="text" 
         value={newTodo} 

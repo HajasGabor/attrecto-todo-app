@@ -9,11 +9,9 @@ const TodoList = ({ todos, onUpdateTitleTodo, onUpdateCompletionTodo, onDeleteTo
     const sortedTodos = todos.slice().sort((a, b) => a.id - b.id);
   
     const handleUpdateCompletion = (id, completed) => {
-      // Update completion status on the server
       axios
         .put(`http://localhost:3000/todos/${id}`, { completed: !completed })
         .then((response) => {
-          // Update the todos state to reflect the updated completion status
           onUpdateCompletionTodo(response.data.id, response.data.completed);
         })
         .catch((error) => console.error('Error updating completion status:', error));
@@ -25,13 +23,10 @@ const TodoList = ({ todos, onUpdateTitleTodo, onUpdateCompletionTodo, onDeleteTo
     };
   
     const handleUpdateTitle = (id) => {
-      // Update the todo on the server
       axios
         .put(`http://localhost:3000/todos/${id}`, { title: editedTitle })
         .then((response) => {
-          // Update the todos state to reflect the updated title
           onUpdateTitleTodo(response.data.id, response.data.title);
-          // Reset editing state
           setEditingTodoId(null);
           setEditedTitle('');
         })

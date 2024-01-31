@@ -1,0 +1,47 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.modalContainer {
+    position: relative;
+    z-index: 2; /* Ensure the modal appears above other elements */
+    width: 800px;
+    max-width: 90%; /* Ensure the modal is responsive */
+    height: auto;
+    background-color: rgba(103, 103, 103, 0.3);
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    display: flex;
+    border-radius: 10px;
+    flex-direction: column;
+    padding: 25px;
+}
+
+.modalContent {
+    padding-top: 10%;   
+}
+
+.closeBtn {
+    width: 10%;
+    color: white;
+    border: none;
+    padding: 0px;
+    cursor: pointer;
+    align-self: center;
+}
+
+.closeBtn:hover {
+    background-color: rgb(255, 0, 0);
+}
+
+.modalFooter {
+    display: flex;
+    margin-top: 0%;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
