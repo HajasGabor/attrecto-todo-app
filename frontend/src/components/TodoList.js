@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './TodoList.css';
+import API_BASE_URL from './ApiConfig';
 
 const TodoList = ({ todos, onUpdateTitleTodo, onUpdateCompletionTodo, onDeleteTodo }) => {
     const [editedTitle, setEditedTitle] = useState('');
@@ -10,7 +11,7 @@ const TodoList = ({ todos, onUpdateTitleTodo, onUpdateCompletionTodo, onDeleteTo
   
     const handleUpdateCompletion = (id, completed) => {
       axios
-        .put(`http://localhost:3000/todos/${id}`, { completed: !completed })
+        .put(`${API_BASE_URL}todos/${id}`, { completed: !completed })
         .then((response) => {
           onUpdateCompletionTodo(response.data.id, response.data.completed);
         })
@@ -24,7 +25,7 @@ const TodoList = ({ todos, onUpdateTitleTodo, onUpdateCompletionTodo, onDeleteTo
   
     const handleUpdateTitle = (id) => {
       axios
-        .put(`http://localhost:3000/todos/${id}`, { title: editedTitle })
+        .put(`${API_BASE_URL}todos/${id}`, { title: editedTitle })
         .then((response) => {
           onUpdateTitleTodo(response.data.id, response.data.title);
           setEditingTodoId(null);

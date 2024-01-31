@@ -8,22 +8,24 @@ body {
 }
 
 .modalContainer {
-    position: relative;
-    z-index: 2; /* Ensure the modal appears above other elements */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
     width: 800px;
-    max-width: 90%; /* Ensure the modal is responsive */
-    height: auto;
+    max-width: 90%;
+    max-height: 80vh; /* Adjust the max-height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
     background-color: rgba(103, 103, 103, 0.3);
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     display: flex;
     border-radius: 10px;
     flex-direction: column;
     padding: 25px;
-}
+  }
 
-.modalContent {
-    padding-top: 10%;   
-}
+
 
 .closeBtn {
     width: 10%;

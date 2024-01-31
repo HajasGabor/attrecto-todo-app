@@ -5,25 +5,36 @@ import { Todo } from './todo';
 import { CreateTodoDto } from './create-todo.dto';
 import { UpdateTodoDto } from './update-todo.dto';
 import { NotFoundException } from '@nestjs/common';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class TodoService {
   constructor(
     @InjectRepository(Todo)
     private todoRepository: Repository<Todo>,
+    private readonly userService: UserService,
   ) {}
 
   async getAllTodos(): Promise<Todo[]> {
     return this.todoRepository.find();
   }
 
-  async createTodo(createTodoDto: CreateTodoDto) {
-    if (!createTodoDto.title || createTodoDto.title.trim() === '') {
-        throw new BadRequestException('Title is required');
+  async createTodoForUser(
+    userId: number,
+    createTodoDto: CreateTodoDto,
+  ): Promise<Todo> {
+    // Check if the user exists
+    const user = await this.userService.getUserById(userId);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
     }
 
+    // Create the todo and associate it with the user
+    const todo = this.todoRepository.create({
+      ...createTodoDto,
+      user,
+    });
 
-    const todo = this.todoRepository.create({ title: createTodoDto.title });
     return this.todoRepository.save(todo);
   }
 
@@ -41,7 +52,7 @@ export class TodoService {
     if (updateTodoDto.title !== undefined) {
       todo.title = updateTodoDto.title;
     }
-    
+
     return this.todoRepository.save(todo);
   }
 

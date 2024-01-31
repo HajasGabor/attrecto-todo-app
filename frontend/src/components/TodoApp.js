@@ -2,25 +2,28 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TodoList from './TodoList';
 import './TodoApp.css';
+import API_BASE_URL from './ApiConfig';
 
-const TodoApp = () => {
+const TodoApp = ({ userId, userName }) => {
   const [newTodo, setNewTodo] = useState('');
   const [todos, setTodos] = useState([]);
 
-  const fetchTodos = () => {
-    axios
-      .get('http://localhost:3000/todos')
-      .then((response) => setTodos(response.data))
-      .catch((error) => console.error('Error fetching todos:', error));
-  };
-
   useEffect(() => {
+    const fetchTodos = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}user/${userId}`);
+        setTodos(response.data.todos);
+      } catch (error) {
+        console.error('Error fetching todos:', error);
+      }
+    };
+  
     fetchTodos();
-  }, []);
+  }, [userId]);
 
   const handleCreateTodo = () => {
     axios
-      .post('http://localhost:3000/todos', { title: newTodo })
+      .post(`${API_BASE_URL}todos/${userId}`, { title: newTodo })
       .then((response) => {
         console.log('Todo created:', response.data);
         // Update the todos state to reflect the new todo
@@ -39,7 +42,7 @@ const TodoApp = () => {
 
   const handleUpdateTitleTodo = (id, updatedTitle) => {
     axios
-      .put(`http://localhost:3000/todos/${id}`, { title: updatedTitle })
+      .put(`${API_BASE_URL}todos/${id}`, { title: updatedTitle })
       .then((response) => {
         console.log('Title updated:', response.data);
         setTodos((prevTodos) =>
@@ -51,7 +54,7 @@ const TodoApp = () => {
 
   const handleUpdateCompletionTodo = (id, completed) => {
     axios
-      .put(`http://localhost:3000/todos/${id}`, { completed: completed })
+      .put(`${API_BASE_URL}todos/${id}`, { completed: completed })
       .then((response) => {
         console.log('Completion changed:', response.data);
         const { title } = response.data;
@@ -64,7 +67,7 @@ const TodoApp = () => {
 
   const handleDeleteTodo = (id) => {
     axios
-      .delete(`http://localhost:3000/todos/${id}`)
+      .delete(`${API_BASE_URL}todos/${id}`)
       .then(() => {
         console.log('Deleted:', id.title);
         setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
@@ -74,7 +77,7 @@ const TodoApp = () => {
 
   return (
     <div className="container">
-      <h1>User Name</h1>
+      <h1>{userName}</h1>
       <input 
         type="text" 
         value={newTodo} 
