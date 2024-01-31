@@ -1,0 +1,16 @@
+.addUserBtn {
+    background-color: rgb(10, 136, 109);
+}
+
+.addUserBtn:hover {
+    background-color: rgb(0, 212, 170);
+}
+
+.cancelBtn {
+    background-color: darkred;
+}
+
+.cancelBtn:hover {
+    background-color: red;
+}   
+

@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import TodoApp from "./TodoApp";
 import TodosModal from "./TodosModal";
 import API_BASE_URL from "./ApiConfig";
+import "./Users.css";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userName, setUserName] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [newUserName, setNewUserName] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+  const [creatingUser, setCreatingUser] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -29,18 +32,66 @@ const Users = () => {
     setUserName(userName);
   };
 
+  const handleCreateUser = async () => {
+    try {
+      if (!newUserName.trim() || !newEmail.trim()) {
+        alert("Please enter a valid user name and email");
+        return;
+      }
+      const response = await axios.post(`${API_BASE_URL}user`, {
+        name: newUserName,
+        email: newEmail,
+      });
+
+      setUsers((prevUsers) => [...prevUsers, response.data]);
+      setNewUserName("");
+      setNewEmail("");
+      setCreatingUser(false);
+    } catch (error) {
+      console.error("Error creating user:", error);
+    }
+  };
+
   return (
     <div>
       <h1>User List</h1>
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>
-            <button onClick={() => handleUserClick(user.id, user.name)}>
-              {user.name}
-            </button>
-          </li>
-        ))}
-      </ul>
+      <div>
+        <ul>
+          {users.map((user) => (
+            <li key={user.id}>
+              <button onClick={() => handleUserClick(user.id, user.name)}>
+                {user.name}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {creatingUser ? (
+        <div>
+          <input
+            type="text"
+            value={newUserName}
+            onChange={(e) => setNewUserName(e.target.value)}
+            placeholder="Enter a new user name..."
+            required
+          />
+          <input
+            type="email"
+            value={newEmail}
+            onChange={(e) => setNewEmail(e.target.value)}
+            placeholder="Enter an email address..."
+            required
+          />
+          <button onClick={handleCreateUser} className="addUserBtn">
+            Add User
+          </button>
+          <button onClick={() => setCreatingUser(false)} className="cancelBtn">
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button onClick={() => setCreatingUser(true)}>Create User</button>
+      )}
       {modalOpen && (
         <TodosModal
           setModalOpen={setModalOpen}
