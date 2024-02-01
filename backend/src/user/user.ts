@@ -12,6 +12,9 @@ export class User {
   @Column({ unique: true })
   email: string;
 
+  @Column({ type: 'bytea', nullable: true })
+  profilePicture?: Buffer;
+
   @OneToMany(() => Todo, (todo) => todo.user)
   todos: Todo[];
 }

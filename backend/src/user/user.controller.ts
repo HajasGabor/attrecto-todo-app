@@ -7,14 +7,32 @@ import {
   Param,
   Body,
   NotFoundException,
+  UseInterceptors,
+  UploadedFile,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user';
 import { CreateUserDto } from './create-user.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
+import { error } from 'console';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Post('uploadProfilePicture/:id')
+  @UseInterceptors(FileInterceptor('profilePicture'))
+  async uploadProfilePicture(
+    @Param('id') id: number,
+    @UploadedFile() file,
+    @Req() req,
+  ): Promise<void> {
+    console.log('File:', file);
+    await this.userService.uploadProfilePicture(id, file);
+  }
 
   @Get()
   async getAllUsers(): Promise<User[]> {
@@ -22,9 +40,8 @@ export class UserController {
   }
 
   @Get(':id')
-  async getUserTodos(@Param('id') id: string): Promise<User> {
-    const userId = parseInt(id, 10);
-    return this.userService.getUserById(userId);
+  async getUserTodos(@Param('id') id: number): Promise<User> {
+    return this.userService.getUserById(id);
   }
 
   @Post()
@@ -40,14 +57,14 @@ export class UserController {
 
   @Put(':id')
   updateUser(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updatedUser: User,
   ): Promise<User> {
-    return this.userService.updateUser(parseInt(id, 10), updatedUser);
+    return this.userService.updateUser(id, updatedUser);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string): Promise<User> {
-    return this.userService.deleteUser(parseInt(id, 10));
+  deleteUser(@Param('id') id: number): Promise<User> {
+    return this.userService.deleteUser(id);
   }
 }

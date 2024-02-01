@@ -1,3 +1,11 @@
+.userListBtn {
+    background-color: rgb(0, 0, 0);
+}
+
+.userListBtn:hover {
+    background-color: rgb(10, 136, 109);
+}
+
 .addUserBtn {
     background-color: rgb(10, 136, 109);
 }

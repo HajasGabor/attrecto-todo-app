@@ -90,7 +90,9 @@ const Users = () => {
           </button>
         </div>
       ) : (
-        <button onClick={() => setCreatingUser(true)}>Create User</button>
+        <button onClick={() => setCreatingUser(true)} className="userListBtn">
+          Create User
+        </button>
       )}
       {modalOpen && (
         <TodosModal

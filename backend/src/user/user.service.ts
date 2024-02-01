@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user';
+import { Multer } from 'multer';
 
 @Injectable()
 export class UserService {
@@ -14,16 +15,30 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async uploadProfilePicture(userId: number, file: Multer.File): Promise<void> {
+    try {
+      const user = await this.userRepository.findOneOrFail({
+        where: { id: userId },
+      });
+      user.profilePicture = file.buffer;
+      await this.userRepository.save(user);
+    } catch (error) {
+      console.log(error);
+      throw new NotFoundException(`User with id ${userId} not found`);
+    }
+  }
+
   async getAllUsers(): Promise<User[]> {
     return this.userRepository.find();
   }
 
   async getUserById(userId: number): Promise<User | undefined> {
     try {
-      return await this.userRepository.findOneOrFail({
+      const user = await this.userRepository.findOneOrFail({
         where: { id: userId },
         relations: ['todos'],
       });
+      return user;
     } catch (error) {
       console.error('Error fetching user with todos:', error);
       throw new NotFoundException(`User with id ${userId} not found`);

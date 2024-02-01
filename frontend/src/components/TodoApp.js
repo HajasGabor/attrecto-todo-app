@@ -3,22 +3,34 @@ import axios from "axios";
 import TodoList from "./TodoList";
 import "./TodoApp.css";
 import API_BASE_URL from "./ApiConfig";
+import UploadFile from "./UploadFile";
+import { Buffer } from "buffer";
+import defaultAvatar from "../avatar.jpg";
 
 const TodoApp = ({ userId, userName }) => {
   const [newTodo, setNewTodo] = useState("");
   const [todos, setTodos] = useState([]);
+  const [profilePicture, setProfilePicture] = useState(null);
+  const [profilePictureUploaded, setProfilePictureUploaded] = useState(false);
 
   useEffect(() => {
-    const fetchTodos = async () => {
+    const fetchUserData = async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}user/${userId}`);
         setTodos(response.data.todos);
+
+        const imageData = response.data.profilePicture.data;
+        const imageBuffer = Buffer.isBuffer(imageData)
+          ? imageData
+          : Buffer.from(imageData);
+
+        setProfilePicture(imageBuffer.toString("base64"));
       } catch (error) {
-        console.error("Error fetching todos:", error);
+        console.error("Error fetching user data:", error);
       }
     };
 
-    fetchTodos();
+    fetchUserData();
   }, [userId]);
 
   const handleCreateTodo = () => {
@@ -81,8 +93,40 @@ const TodoApp = ({ userId, userName }) => {
       .catch((error) => console.error("Error deleting todo:", error));
   };
 
+  const handleFileChange = (file) => {
+    setProfilePicture(file);
+  };
+
+  const handleUploadProfilePicture = () => {
+    if (profilePicture) {
+      const formData = new FormData();
+      formData.append("profilePicture", profilePicture);
+      console.log("profilePicture:", profilePicture);
+
+      axios
+        .post(`${API_BASE_URL}user/uploadProfilePicture/${userId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("Profile picture uploaded:", response.data);
+          setProfilePictureUploaded(true);
+        })
+        .catch((error) =>
+          console.error("Error uploading profile picture:", error)
+        );
+    }
+  };
+
   return (
     <div className="container">
+      <UploadFile
+        onFileChange={handleFileChange}
+        onUpload={handleUploadProfilePicture}
+        profilePicture={profilePicture}
+      />
+
       <h1>{userName}</h1>
       <input
         type="text"
