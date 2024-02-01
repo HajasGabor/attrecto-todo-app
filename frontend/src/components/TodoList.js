@@ -90,6 +90,15 @@ const TodoList = ({
                 >
                   {todo.title}
                 </span>
+                {editingTodoId === todo.id && (
+                  <input
+                    type="text"
+                    value={editedTitle}
+                    onChange={(e) => setEditedTitle(e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(e, todo.id)}
+                    className="edit-input"
+                  />
+                )}
               </td>
               <td>
                 <span className="title">
@@ -105,13 +114,6 @@ const TodoList = ({
               <td>
                 {editingTodoId === todo.id ? (
                   <>
-                    <input
-                      type="text"
-                      value={editedTitle}
-                      onChange={(e) => setEditedTitle(e.target.value)}
-                      onKeyDown={(e) => handleKeyDown(e, todo.id)}
-                      className="edit-input"
-                    />
                     <button
                       onClick={() => handleUpdateTitle(todo.id)}
                       className="save-button"

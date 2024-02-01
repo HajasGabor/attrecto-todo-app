@@ -53,21 +53,10 @@ const Users = () => {
   };
 
   return (
-    <div>
-      <h1>User List</h1>
-      <div>
-        <ul>
-          {users.map((user) => (
-            <li key={user.id}>
-              <button onClick={() => handleUserClick(user.id, user.name)}>
-                {user.name}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="userList">
       {creatingUser ? (
         <div>
+          <h1>Create User</h1>
           <input
             type="text"
             value={newUserName}
@@ -90,9 +79,23 @@ const Users = () => {
           </button>
         </div>
       ) : (
-        <button onClick={() => setCreatingUser(true)} className="userListBtn">
-          Create User
-        </button>
+        <div>
+          <h1>User List</h1>
+          <div>
+            <ul>
+              {users.map((user) => (
+                <li key={user.id}>
+                  <button onClick={() => handleUserClick(user.id, user.name)}>
+                    {user.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <button onClick={() => setCreatingUser(true)} className="userListBtn">
+            Create User
+          </button>
+        </div>
       )}
       {modalOpen && (
         <TodosModal

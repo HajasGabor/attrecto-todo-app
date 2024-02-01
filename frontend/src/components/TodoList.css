@@ -45,13 +45,15 @@
 }
 
 .editing .delete-button {
-    background-color: rgb(0, 0, 0);
-    width: 55%
+    display: none;
+}
+
+.editing .edit-button {
+    background-color: rgb(31, 189, 0);
 }
 
 .editing .save-button {
     background-color: rgb(31, 189, 0);
-    width: 55%;
 }
 
 .save-button:hover {
@@ -66,10 +68,8 @@ display: none;
 display: none;
 }
   
-.editing .edit-input {
-    width: 300%;
-    padding: 10px 10px;
-    margin: auto;
+.editing {
+    width: 100%;
 }  
 
 

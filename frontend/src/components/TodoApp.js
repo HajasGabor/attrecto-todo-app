@@ -5,13 +5,13 @@ import "./TodoApp.css";
 import API_BASE_URL from "./ApiConfig";
 import UploadFile from "./UploadFile";
 import { Buffer } from "buffer";
-import defaultAvatar from "../avatar.jpg";
 
 const TodoApp = ({ userId, userName }) => {
   const [newTodo, setNewTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
   const [profilePictureUploaded, setProfilePictureUploaded] = useState(false);
+  const [deadline, setDeadline] = useState("");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -38,12 +38,20 @@ const TodoApp = ({ userId, userName }) => {
       alert("Please enter a valid todo title");
       return;
     }
+    if (!deadline.trim()) {
+      alert("Please enter a valid deadline");
+      return;
+    }
     axios
-      .post(`${API_BASE_URL}todos/${userId}`, { title: newTodo })
+      .post(`${API_BASE_URL}todos/${userId}`, {
+        title: newTodo,
+        deadline: deadline,
+      })
       .then((response) => {
         console.log("Todo created:", response.data);
         setTodos([...todos, response.data]);
         setNewTodo("");
+        setDeadline("");
       })
       .catch((error) => console.error("Error creating todo:", error));
   };
@@ -135,6 +143,14 @@ const TodoApp = ({ userId, userName }) => {
         onKeyDown={handleKeyDown}
         className="new-todo-input"
         placeholder="Enter a new todo..."
+        required
+      />
+      <input
+        type="date"
+        value={deadline}
+        onChange={(e) => setDeadline(e.target.value)}
+        className="deadline-input"
+        placeholder="Enter deadline..."
         required
       />
       <button onClick={handleCreateTodo} className="narrow-button">

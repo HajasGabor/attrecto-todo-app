@@ -23,13 +23,11 @@ export class TodoService {
     userId: number,
     createTodoDto: CreateTodoDto,
   ): Promise<Todo> {
-    // Check if the user exists
     const user = await this.userService.getUserById(userId);
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
 
-    // Create the todo and associate it with the user
     const todo = this.todoRepository.create({
       ...createTodoDto,
       user,
