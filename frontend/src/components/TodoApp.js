@@ -30,9 +30,7 @@ const TodoApp = ({ userId, userName }) => {
       .post(`${API_BASE_URL}todos/${userId}`, { title: newTodo })
       .then((response) => {
         console.log("Todo created:", response.data);
-        // Update the todos state to reflect the new todo
         setTodos([...todos, response.data]);
-        // Clear the input field
         setNewTodo("");
       })
       .catch((error) => console.error("Error creating todo:", error));

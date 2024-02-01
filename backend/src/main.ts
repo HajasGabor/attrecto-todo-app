@@ -6,10 +6,8 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Morgan middleware konfigurálása
   app.use(morgan('dev'));
 
-  // Configure CORS middleware
   app.enableCors();
 
   await app.listen(3000);
