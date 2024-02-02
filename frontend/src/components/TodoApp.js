@@ -10,7 +10,6 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
   const [newTodo, setNewTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
-  const [profilePictureUploaded, setProfilePictureUploaded] = useState(false);
   const [deadline, setDeadline] = useState("");
 
   useEffect(() => {
@@ -31,7 +30,7 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
     };
 
     fetchUserData();
-  }, [userId, profilePictureUploaded, userName]);
+  }, [userId, userName]);
 
   const handleCreateTodo = () => {
     if (!newTodo.trim()) {
@@ -150,7 +149,6 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
           }
         );
         console.log("Profile picture uploaded:", response.data);
-        setProfilePictureUploaded(true);
       } catch (error) {
         console.error("Error uploading profile picture:", error);
       }
@@ -163,7 +161,6 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
         onFileChange={handleFileChange}
         onUpload={handleUploadProfilePicture}
         profilePicture={profilePicture}
-        profilePictureUploaded={profilePictureUploaded}
       />
 
       <div className="user-actions">

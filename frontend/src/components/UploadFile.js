@@ -2,12 +2,7 @@ import React, { useState, useEffect } from "react";
 import defaultAvatar from "../avatar.jpg";
 import "./UploadFile.css";
 
-const UploadFile = ({
-  onFileChange,
-  onUpload,
-  profilePicture,
-  profilePictureUploaded,
-}) => {
+const UploadFile = ({ onFileChange, onUpload, profilePicture }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedFileUrl, setSelectedFileUrl] = useState(null);
 
@@ -29,6 +24,7 @@ const UploadFile = ({
 
   const handleUpload = () => {
     onUpload(selectedFile);
+    setSelectedFile(null);
   };
 
   return (
@@ -62,7 +58,7 @@ const UploadFile = ({
           className="file-input"
         />
       </label>
-      {!profilePictureUploaded && selectedFile && (
+      {selectedFile && (
         <button onClick={handleUpload} className="narrow-button">
           Upload Profile Picture
         </button>

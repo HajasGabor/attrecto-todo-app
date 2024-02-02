@@ -21,11 +21,11 @@ import { RegisteredUserModule } from './registered-user/registered-user.module';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
+      host: 'localhost',
       port: 5432,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      database: 'postgres',
       entities: [User, Todo],
       synchronize: true,
       autoLoadEntities: true,
