@@ -12,6 +12,7 @@ const Users = ({ onLogout }) => {
   const [newUserName, setNewUserName] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [creatingUser, setCreatingUser] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const sortedUsers = users.slice().sort((a, b) => a.id - b.id);
 
@@ -22,6 +23,8 @@ const Users = ({ onLogout }) => {
         setUsers(response.data);
       } catch (error) {
         console.error("Error fetching users:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -59,61 +62,75 @@ const Users = ({ onLogout }) => {
   };
 
   return (
-    <div className="userList">
-      {creatingUser ? (
-        <div>
-          <h1>Create User</h1>
-          <input
-            type="text"
-            value={newUserName}
-            onChange={(e) => setNewUserName(e.target.value)}
-            placeholder="Enter a new user name..."
-            required
-          />
-          <input
-            type="email"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-            placeholder="Enter an email address..."
-            required
-          />
-          <button onClick={handleCreateUser} className="addUserBtn">
-            Add User
-          </button>
-          <button onClick={() => setCreatingUser(false)} className="cancelBtn">
-            Cancel
-          </button>
-        </div>
+    <div>
+      {loading ? (
+        <p>Loading data...</p>
       ) : (
-        <div>
-          <h1>User List</h1>
-          <div className="containter">
-            <ul>
-              {sortedUsers.map((user) => (
-                <li key={user.id}>
-                  <button onClick={() => handleUserClick(user.id, user.name)}>
-                    {user.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <button onClick={() => setCreatingUser(true)} className="userListBtn">
-            Create User
+        <div className="userList">
+          {creatingUser ? (
+            <div>
+              <h1>Create User</h1>
+              <input
+                type="text"
+                value={newUserName}
+                onChange={(e) => setNewUserName(e.target.value)}
+                placeholder="Enter a new user name..."
+                required
+              />
+              <input
+                type="email"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+                placeholder="Enter an email address..."
+                required
+              />
+              <button onClick={handleCreateUser} className="addUserBtn">
+                Add User
+              </button>
+              <button
+                onClick={() => setCreatingUser(false)}
+                className="cancelBtn"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <div>
+              <h1>User List</h1>
+              <div className="containter">
+                <ul>
+                  {sortedUsers.map((user) => (
+                    <li key={user.id}>
+                      <button
+                        onClick={() => handleUserClick(user.id, user.name)}
+                      >
+                        {user.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <button
+                onClick={() => setCreatingUser(true)}
+                className="userListBtn"
+              >
+                Create User
+              </button>
+            </div>
+          )}
+          {modalOpen && (
+            <TodosModal
+              setModalOpen={setModalOpen}
+              userId={selectedUser}
+              userName={userName}
+              setUserName={setUserName}
+            />
+          )}
+          <button onClick={handleLogout} className="logoutBtn">
+            Logout
           </button>
         </div>
       )}
-      {modalOpen && (
-        <TodosModal
-          setModalOpen={setModalOpen}
-          userId={selectedUser}
-          userName={userName}
-          setUserName={setUserName}
-        />
-      )}
-      <button onClick={handleLogout} className="logoutBtn">
-        Logout
-      </button>
     </div>
   );
 };

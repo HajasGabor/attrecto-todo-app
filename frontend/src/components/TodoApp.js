@@ -11,6 +11,7 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
   const [todos, setTodos] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
   const [deadline, setDeadline] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -26,6 +27,8 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
         setProfilePicture(imageBuffer.toString("base64"));
       } catch (error) {
         console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -156,48 +159,56 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
   };
 
   return (
-    <div className="container">
-      <UploadFile
-        onFileChange={handleFileChange}
-        onUpload={handleUploadProfilePicture}
-        profilePicture={profilePicture}
-      />
+    <div>
+      {loading ? (
+        <div className="loading">
+          <p>Loading data...</p>
+        </div>
+      ) : (
+        <div className="container">
+          <UploadFile
+            onFileChange={handleFileChange}
+            onUpload={handleUploadProfilePicture}
+            profilePicture={profilePicture}
+          />
 
-      <div className="user-actions">
-        <h1>{userName}</h1>
-        <button onClick={handleRenameUser} className="renameBtn">
-          Rename
-        </button>
-        <button onClick={handleDeleteUser} className="deleteBtn">
-          Delete
-        </button>
-      </div>
-      <input
-        type="text"
-        value={newTodo}
-        onChange={(e) => setNewTodo(e.target.value)}
-        onKeyDown={handleKeyDown}
-        className="new-todo-input"
-        placeholder="Enter a new todo..."
-        required
-      />
-      <input
-        type="date"
-        value={deadline}
-        onChange={(e) => setDeadline(e.target.value)}
-        className="deadline-input"
-        placeholder="Enter deadline..."
-        required
-      />
-      <button onClick={handleCreateTodo} className="narrow-button">
-        Add Todo
-      </button>
-      <TodoList
-        todos={todos}
-        onUpdateTodo={handleUpdateTodo}
-        onUpdateCompletionTodo={handleUpdateCompletionTodo}
-        onDeleteTodo={handleDeleteTodo}
-      />
+          <div className="user-actions">
+            <h1>{userName}</h1>
+            <button onClick={handleRenameUser} className="renameBtn">
+              Rename
+            </button>
+            <button onClick={handleDeleteUser} className="deleteBtn">
+              Delete
+            </button>
+          </div>
+          <input
+            type="text"
+            value={newTodo}
+            onChange={(e) => setNewTodo(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="new-todo-input"
+            placeholder="Enter a new todo..."
+            required
+          />
+          <input
+            type="date"
+            value={deadline}
+            onChange={(e) => setDeadline(e.target.value)}
+            className="deadline-input"
+            placeholder="Enter deadline..."
+            required
+          />
+          <button onClick={handleCreateTodo} className="narrow-button">
+            Add Todo
+          </button>
+          <TodoList
+            todos={todos}
+            onUpdateTodo={handleUpdateTodo}
+            onUpdateCompletionTodo={handleUpdateCompletionTodo}
+            onDeleteTodo={handleDeleteTodo}
+          />
+        </div>
+      )}
     </div>
   );
 };

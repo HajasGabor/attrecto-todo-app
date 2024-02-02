@@ -5,6 +5,16 @@ body {
   background-color: #f4f4f4;
 }
 
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 24px;
+  color: #ffffff;
+  font-weight: bold;
+}
+
 .container {
   max-width: 600px;
   margin: auto;
