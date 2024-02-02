@@ -53,3 +53,31 @@ li {
   padding: 10px;
   border-radius: 5px;
 }
+
+.user-actions {
+  align-items: center;
+}
+
+h1 {
+  margin-bottom: 0px;
+}
+
+.renameBtn {
+  width: auto;
+  margin-bottom: 2%;
+  background-color: rgb(31, 189, 0);
+
+}
+.deleteBtn {
+  background-color: rgb(0, 0, 0);
+  width: auto;
+  margin-bottom: 2%;
+}
+
+.deleteBtn:hover {
+  background-color: rgb(255, 0, 0);
+}
+
+.renameBtn:hover {
+  background-color: rgb(0, 72, 255);
+}

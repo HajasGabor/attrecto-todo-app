@@ -51,6 +51,10 @@ export class TodoService {
       todo.title = updateTodoDto.title;
     }
 
+    if (updateTodoDto.deadline !== undefined) {
+      todo.deadline = updateTodoDto.deadline;
+    }
+
     return this.todoRepository.save(todo);
   }
 

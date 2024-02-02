@@ -38,14 +38,10 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
       alert("Please enter a valid todo title");
       return;
     }
-    if (!deadline.trim()) {
-      alert("Please enter a valid deadline");
-      return;
-    }
     axios
       .post(`${API_BASE_URL}todos/${userId}`, {
         title: newTodo,
-        deadline: deadline,
+        deadline: deadline || null,
       })
       .then((response) => {
         console.log("Todo created:", response.data);
@@ -62,11 +58,14 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
     }
   };
 
-  const handleUpdateTitleTodo = (id, updatedTitle) => {
+  const handleUpdateTodo = (id, updatedTitle, updatedDeadline) => {
     axios
-      .put(`${API_BASE_URL}todos/${id}`, { title: updatedTitle })
+      .put(`${API_BASE_URL}todos/${id}`, {
+        title: updatedTitle,
+        deadline: updatedDeadline,
+      })
       .then((response) => {
-        console.log("Title updated:", response.data);
+        console.log("Todo updated:", response.data);
         setTodos((prevTodos) =>
           prevTodos.map((todo) =>
             todo.id === response.data.id ? response.data : todo
@@ -81,10 +80,9 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
       .put(`${API_BASE_URL}todos/${id}`, { completed: completed })
       .then((response) => {
         console.log("Completion changed:", response.data);
-        const { title } = response.data;
         setTodos((prevTodos) =>
           prevTodos.map((todo) =>
-            todo.id === id ? { ...todo, completed, title } : todo
+            todo.id === id ? { ...todo, completed } : todo
           )
         );
       })
@@ -170,11 +168,11 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
 
       <div className="user-actions">
         <h1>{userName}</h1>
-        <button onClick={handleRenameUser} className="action-button">
-          Rename User
+        <button onClick={handleRenameUser} className="renameBtn">
+          Rename
         </button>
-        <button onClick={handleDeleteUser} className="action-button">
-          Delete User
+        <button onClick={handleDeleteUser} className="deleteBtn">
+          Delete
         </button>
       </div>
       <input
@@ -199,7 +197,7 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
       </button>
       <TodoList
         todos={todos}
-        onUpdateTitleTodo={handleUpdateTitleTodo}
+        onUpdateTodo={handleUpdateTodo}
         onUpdateCompletionTodo={handleUpdateCompletionTodo}
         onDeleteTodo={handleDeleteTodo}
       />

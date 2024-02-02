@@ -5,12 +5,13 @@ import API_BASE_URL from "./ApiConfig";
 
 const TodoList = ({
   todos,
-  onUpdateTitleTodo,
+  onUpdateTodo,
   onUpdateCompletionTodo,
   onDeleteTodo,
 }) => {
   const [editedTitle, setEditedTitle] = useState("");
   const [editingTodoId, setEditingTodoId] = useState(null);
+  const [editedDeadline, setEditedDeadline] = useState("");
 
   const sortedTodos = todos.slice().sort((a, b) => a.id - b.id);
 
@@ -26,17 +27,27 @@ const TodoList = ({
   };
 
   const handleEdit = (id) => {
+    const todoToEdit = todos.find((todo) => todo.id === id);
     setEditingTodoId(id);
-    setEditedTitle(todos.find((todo) => todo.id === id).title);
+    setEditedTitle(todoToEdit.title);
+    setEditedDeadline(todoToEdit.deadline || "");
   };
 
-  const handleUpdateTitle = (id) => {
+  const handleUpdateTodo = (id) => {
     axios
-      .put(`${API_BASE_URL}todos/${id}`, { title: editedTitle })
+      .put(`${API_BASE_URL}todos/${id}`, {
+        title: editedTitle,
+        deadline: editedDeadline,
+      })
       .then((response) => {
-        onUpdateTitleTodo(response.data.id, response.data.title);
+        onUpdateTodo(
+          response.data.id,
+          response.data.title,
+          response.data.deadline
+        );
         setEditingTodoId(null);
         setEditedTitle("");
+        setEditedDeadline("");
       })
       .catch((error) => console.error("Error updating todo:", error));
   };
@@ -47,7 +58,7 @@ const TodoList = ({
 
   const handleKeyDown = (e, todoId) => {
     if (e.key === "Enter") {
-      handleUpdateTitle(todoId);
+      handleUpdateTodo(todoId);
     }
   };
 
@@ -101,21 +112,32 @@ const TodoList = ({
                 )}
               </td>
               <td>
-                <span className="title">
-                  {todo.deadline
-                    ? new Date(todo.deadline).toLocaleDateString("hu-HU", {
-                        year: "numeric",
-                        month: "2-digit",
-                        day: "2-digit",
-                      })
-                    : "N/A"}
-                </span>
+                {editingTodoId === todo.id ? (
+                  <input
+                    type="date"
+                    value={editedDeadline}
+                    onChange={(e) => {
+                      setEditedDeadline(e.target.value);
+                    }}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="title">
+                    {todo.deadline
+                      ? new Date(todo.deadline).toLocaleDateString("hu-HU", {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        })
+                      : "N/A"}
+                  </span>
+                )}
               </td>
               <td>
                 {editingTodoId === todo.id ? (
                   <>
                     <button
-                      onClick={() => handleUpdateTitle(todo.id)}
+                      onClick={() => handleUpdateTodo(todo.id)}
                       className="save-button"
                     >
                       Save

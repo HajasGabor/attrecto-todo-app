@@ -1,10 +1,13 @@
 // update-todo.dto.ts
-import { IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
+import { IsDate, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
 
 export class UpdateTodoDto {
   @IsNotEmpty()
   title: string;
 
+  @IsOptional()
+  @IsDate()
+  deadline?: Date;
 
   @IsOptional()
   @IsBoolean()

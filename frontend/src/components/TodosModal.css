@@ -36,3 +36,12 @@
     align-items: center;
     width: 100%;
 }
+
+.modalContainer::-webkit-scrollbar {
+    display: none;
+  }
+  
+.modalContainer {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
