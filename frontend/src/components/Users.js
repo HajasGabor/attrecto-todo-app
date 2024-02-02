@@ -4,7 +4,7 @@ import TodosModal from "./TodosModal";
 import API_BASE_URL from "./ApiConfig";
 import "./Users.css";
 
-const Users = () => {
+const Users = ({ onLogout }) => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userName, setUserName] = useState(null);
@@ -52,6 +52,10 @@ const Users = () => {
     } catch (error) {
       console.error("Error creating user:", error);
     }
+  };
+
+  const handleLogout = () => {
+    onLogout();
   };
 
   return (
@@ -107,6 +111,9 @@ const Users = () => {
           setUserName={setUserName}
         />
       )}
+      <button onClick={handleLogout} className="logoutBtn">
+        Logout
+      </button>
     </div>
   );
 };

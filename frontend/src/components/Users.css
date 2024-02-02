@@ -33,3 +33,9 @@ li {
     background-color: red;
 }   
 
+
+.logoutBtn {
+    margin-top: 10%;
+    background-color: darkred;
+    width: 20%;
+}

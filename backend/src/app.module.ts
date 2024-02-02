@@ -8,10 +8,13 @@ import { TodoController } from './todo/todo.controller';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TodoModule } from './todo/todo.module';
-import { Repository } from 'typeorm';
+import { RegisteredUser } from './registered-user/registered-user';
 import { User } from './user/user';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
+import { RegisteredUserController } from './registered-user/registered-user.controller';
+import { RegisteredUserService } from './registered-user/registered-user.service';
+import { RegisteredUserModule } from './registered-user/registered-user.module';
 
 @Module({
   imports: [
@@ -27,11 +30,12 @@ import { UserService } from './user/user.service';
       synchronize: true,
       autoLoadEntities: true,
     }),
-    TypeOrmModule.forFeature([Todo, User]),
+    TypeOrmModule.forFeature([Todo, User, RegisteredUser]),
     UserModule,
     TodoModule,
+    RegisteredUserModule,
   ],
-  controllers: [TodoController, UserController],
-  providers: [TodoService, UserService],
+  controllers: [TodoController, UserController, RegisteredUserController],
+  providers: [TodoService, UserService, RegisteredUserService],
 })
 export class AppModule {}
