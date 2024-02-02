@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useRef } from "react";
 import "./TodosModal.css";
 import TodoApp from "./TodoApp";
 
-const TodosModal = ({ setModalOpen, userId, userName }) => {
+const TodosModal = ({ setModalOpen, userId, userName, setUserName }) => {
   const modalRef = useRef();
 
   const handleOutsideClick = useCallback(
@@ -29,7 +29,14 @@ const TodosModal = ({ setModalOpen, userId, userName }) => {
   return (
     <div className="modalContainer" ref={modalRef}>
       <div className="modalContent">
-        {userId && <TodoApp userId={userId} userName={userName} />}
+        {userId && (
+          <TodoApp
+            userId={userId}
+            userName={userName}
+            setUserName={setUserName}
+            setModalOpen={setModalOpen}
+          />
+        )}
         <div className="modalFooter">
           <div className="closeBtn">
             <button onClick={() => setModalOpen(false)}>X</button>

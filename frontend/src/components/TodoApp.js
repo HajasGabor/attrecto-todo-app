@@ -6,7 +6,7 @@ import API_BASE_URL from "./ApiConfig";
 import UploadFile from "./UploadFile";
 import { Buffer } from "buffer";
 
-const TodoApp = ({ userId, userName }) => {
+const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
   const [newTodo, setNewTodo] = useState("");
   const [todos, setTodos] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -31,7 +31,7 @@ const TodoApp = ({ userId, userName }) => {
     };
 
     fetchUserData();
-  }, [userId]);
+  }, [userId, profilePictureUploaded, userName]);
 
   const handleCreateTodo = () => {
     if (!newTodo.trim()) {
@@ -105,25 +105,57 @@ const TodoApp = ({ userId, userName }) => {
     setProfilePicture(file);
   };
 
-  const handleUploadProfilePicture = () => {
+  const handleRenameUser = async () => {
+    const updatedUserName = prompt("Enter the new username:", userName);
+
+    if (updatedUserName && updatedUserName.trim() !== "") {
+      await axios
+        .put(`${API_BASE_URL}user/${userId}`, { name: updatedUserName })
+        .then((response) => {
+          console.log("User renamed:", response.data);
+          setUserName(updatedUserName);
+        })
+        .catch((error) => console.error("Error renaming user:", error));
+    }
+  };
+
+  const handleDeleteUser = () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+
+    if (confirmDelete) {
+      axios
+        .delete(`${API_BASE_URL}user/${userId}`)
+        .then(() => {
+          console.log("User deleted:", userName);
+          setModalOpen(false);
+        })
+        .catch((error) => console.error("Error deleting user:", error));
+    }
+  };
+
+  const handleUploadProfilePicture = async () => {
     if (profilePicture) {
       const formData = new FormData();
       formData.append("profilePicture", profilePicture);
       console.log("profilePicture:", profilePicture);
 
-      axios
-        .post(`${API_BASE_URL}user/uploadProfilePicture/${userId}`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log("Profile picture uploaded:", response.data);
-          setProfilePictureUploaded(true);
-        })
-        .catch((error) =>
-          console.error("Error uploading profile picture:", error)
+      try {
+        const response = await axios.post(
+          `${API_BASE_URL}user/uploadProfilePicture/${userId}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
         );
+        console.log("Profile picture uploaded:", response.data);
+        setProfilePictureUploaded(true);
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+      }
     }
   };
 
@@ -133,9 +165,18 @@ const TodoApp = ({ userId, userName }) => {
         onFileChange={handleFileChange}
         onUpload={handleUploadProfilePicture}
         profilePicture={profilePicture}
+        profilePictureUploaded={profilePictureUploaded}
       />
 
-      <h1>{userName}</h1>
+      <div className="user-actions">
+        <h1>{userName}</h1>
+        <button onClick={handleRenameUser} className="action-button">
+          Rename User
+        </button>
+        <button onClick={handleDeleteUser} className="action-button">
+          Delete User
+        </button>
+      </div>
       <input
         type="text"
         value={newTodo}

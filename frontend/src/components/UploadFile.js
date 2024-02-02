@@ -1,9 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import defaultAvatar from "../avatar.jpg";
 import "./UploadFile.css";
 
-const UploadFile = ({ onFileChange, onUpload, profilePicture }) => {
+const UploadFile = ({
+  onFileChange,
+  onUpload,
+  profilePicture,
+  profilePictureUploaded,
+}) => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFileUrl, setSelectedFileUrl] = useState(null);
+
+  useEffect(() => {
+    if (selectedFile) {
+      const fileUrl = URL.createObjectURL(selectedFile);
+      setSelectedFileUrl(fileUrl);
+    }
+  }, [selectedFile]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -18,16 +31,12 @@ const UploadFile = ({ onFileChange, onUpload, profilePicture }) => {
     onUpload(selectedFile);
   };
 
-  const handleAvatarClick = (e) => {
-    e.preventDefault();
-
-    document.getElementById("fileInput").click();
-  };
-
   return (
     <div>
       <label htmlFor="fileInput" className="avatar-label">
-        {profilePicture ? (
+        {selectedFileUrl ? (
+          <img src={selectedFileUrl} alt="Profile Picture" className="image" />
+        ) : profilePicture ? (
           <img
             src={`data:image/*;base64,${profilePicture}`}
             alt="Profile Picture"
@@ -53,7 +62,7 @@ const UploadFile = ({ onFileChange, onUpload, profilePicture }) => {
           className="file-input"
         />
       </label>
-      {selectedFile && (
+      {!profilePictureUploaded && selectedFile && (
         <button onClick={handleUpload} className="narrow-button">
           Upload Profile Picture
         </button>

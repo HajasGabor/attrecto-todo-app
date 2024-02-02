@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user';
+import { Todo } from '../todo/todo';
 import { Multer } from 'multer';
 
 @Injectable()
@@ -13,6 +14,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Todo)
+    private readonly todoRepository: Repository<Todo>,
   ) {}
 
   async uploadProfilePicture(userId: number, file: Multer.File): Promise<void> {
@@ -67,6 +70,7 @@ export class UserService {
   async deleteUser(id: number): Promise<User> {
     const user = await this.getUserById(id);
     if (user) {
+      await this.todoRepository.delete({ user: user });
       await this.userRepository.remove(user);
     }
     return user;

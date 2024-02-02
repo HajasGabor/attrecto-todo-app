@@ -13,6 +13,8 @@ const Users = () => {
   const [newEmail, setNewEmail] = useState("");
   const [creatingUser, setCreatingUser] = useState(false);
 
+  const sortedUsers = users.slice().sort((a, b) => a.id - b.id);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -24,7 +26,7 @@ const Users = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [userName, modalOpen]);
 
   const handleUserClick = (userId, userName) => {
     setModalOpen(true);
@@ -81,9 +83,9 @@ const Users = () => {
       ) : (
         <div>
           <h1>User List</h1>
-          <div>
+          <div className="containter">
             <ul>
-              {users.map((user) => (
+              {sortedUsers.map((user) => (
                 <li key={user.id}>
                   <button onClick={() => handleUserClick(user.id, user.name)}>
                     {user.name}
@@ -102,6 +104,7 @@ const Users = () => {
           setModalOpen={setModalOpen}
           userId={selectedUser}
           userName={userName}
+          setUserName={setUserName}
         />
       )}
     </div>
