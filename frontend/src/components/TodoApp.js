@@ -35,12 +35,12 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
     fetchUserData();
   }, [userId, userName]);
 
-  const handleCreateTodo = () => {
+  const handleCreateTodo = async () => {
     if (!newTodo.trim()) {
       alert("Please enter a valid todo title");
       return;
     }
-    axios
+    await axios
       .post(`${API_BASE_URL}todos/${userId}`, {
         title: newTodo,
         deadline: deadline || null,
@@ -60,8 +60,8 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
     }
   };
 
-  const handleUpdateTodo = (id, updatedTitle, updatedDeadline) => {
-    axios
+  const handleUpdateTodo = async (id, updatedTitle, updatedDeadline) => {
+    await axios
       .put(`${API_BASE_URL}todos/${id}`, {
         title: updatedTitle,
         deadline: updatedDeadline,
@@ -77,8 +77,8 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
       .catch((error) => console.error("Error updating todo:", error));
   };
 
-  const handleUpdateCompletionTodo = (id, completed) => {
-    axios
+  const handleUpdateCompletionTodo = async (id, completed) => {
+    await axios
       .put(`${API_BASE_URL}todos/${id}`, { completed: completed })
       .then((response) => {
         console.log("Completion changed:", response.data);
@@ -91,8 +91,8 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
       .catch((error) => console.error("Error updating todo:", error));
   };
 
-  const handleDeleteTodo = (id) => {
-    axios
+  const handleDeleteTodo = async (id) => {
+    await axios
       .delete(`${API_BASE_URL}todos/${id}`)
       .then(() => {
         console.log("Deleted:", id.title);
@@ -119,19 +119,23 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
     }
   };
 
-  const handleDeleteUser = () => {
+  const handleDeleteUser = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this user?"
     );
 
     if (confirmDelete) {
-      axios
-        .delete(`${API_BASE_URL}user/${userId}`)
-        .then(() => {
+      setLoading(true);
+      try {
+        await axios.delete(`${API_BASE_URL}user/${userId}`).then(() => {
           console.log("User deleted:", userName);
-          setModalOpen(false);
-        })
-        .catch((error) => console.error("Error deleting user:", error));
+        });
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      } finally {
+        setLoading(false);
+        setModalOpen(false);
+      }
     }
   };
 
@@ -139,10 +143,10 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
     if (profilePicture) {
       const formData = new FormData();
       formData.append("profilePicture", profilePicture);
-      console.log("profilePicture:", profilePicture);
+      console.log("Profile picture uploaded:", profilePicture);
 
       try {
-        const response = await axios.post(
+        await axios.post(
           `${API_BASE_URL}user/uploadProfilePicture/${userId}`,
           formData,
           {
@@ -151,7 +155,6 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
             },
           }
         );
-        console.log("Profile picture uploaded:", response.data);
       } catch (error) {
         console.error("Error uploading profile picture:", error);
       }
@@ -162,7 +165,7 @@ const TodoApp = ({ userId, userName, setUserName, setModalOpen }) => {
     <div>
       {loading ? (
         <div className="loading">
-          <p>Loading data...</p>
+          <p>Loading ...</p>
         </div>
       ) : (
         <div className="container">

@@ -64,7 +64,7 @@ const Users = ({ onLogout }) => {
   return (
     <div>
       {loading ? (
-        <p>Loading data...</p>
+        <p>Loading ...</p>
       ) : (
         <div className="userList">
           {creatingUser ? (

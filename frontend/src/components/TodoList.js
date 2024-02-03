@@ -15,8 +15,8 @@ const TodoList = ({
 
   const sortedTodos = todos.slice().sort((a, b) => a.id - b.id);
 
-  const handleUpdateCompletion = (id, completed) => {
-    axios
+  const handleUpdateCompletion = async (id, completed) => {
+    await axios
       .put(`${API_BASE_URL}todos/${id}`, { completed: !completed })
       .then((response) => {
         onUpdateCompletionTodo(response.data.id, response.data.completed);
@@ -33,8 +33,8 @@ const TodoList = ({
     setEditedDeadline(todoToEdit.deadline || "");
   };
 
-  const handleUpdateTodo = (id) => {
-    axios
+  const handleUpdateTodo = async (id) => {
+    await axios
       .put(`${API_BASE_URL}todos/${id}`, {
         title: editedTitle,
         deadline: editedDeadline,
