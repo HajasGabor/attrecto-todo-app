@@ -35,7 +35,7 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
       });
-
+      console.log("Registration response:", response);
       history.push("/login");
     } catch (error) {
       console.error("Registration failed:", error);
